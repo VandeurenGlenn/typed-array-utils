@@ -14,11 +14,11 @@ console.log(utils.toBase16(uint8Array));
 
 console.log(utils.fromString(utils.toHex(uint8Array)));
 
-const face = await new utils.FormatInterface(utils.toBase58(uint8Array))
+let face = new utils.FormatInterface(utils.toBase58(uint8Array))
 console.log(face.toString(face.encoded));
-await face.init(utils.toBase32(uint8Array))
+face = new utils.FormatInterface(utils.toBase32(uint8Array))
 console.log(face.toString(face.encoded));
-await face.init(utils.toBase64(uint8Array))
+face = new utils.FormatInterface(utils.toBase64(uint8Array))
 console.log(face.toString(face.encoded));
-await face.init(utils.toBase16(uint8Array))
+face = new utils.FormatInterface(utils.toBase16(uint8Array))
 console.log(face.toString(face.encoded));

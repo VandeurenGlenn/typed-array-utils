@@ -1,6 +1,6 @@
 {
   "name": "@vandeurenglenn/typed-array-utils",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "type": "module",
   "types": "./index.ds.ts",
@@ -15,7 +15,13 @@
     "type": "git",
     "url": "git+https://github.com/VandeurenGlenn/typed-array-utils.git"
   },
-  "keywords": ["typed", "array", "utils", "format", "to"],
+  "keywords": [
+    "typed",
+    "array",
+    "utils",
+    "format",
+    "to"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
@@ -29,7 +35,7 @@
   },
   "dependencies": {
     "@vandeurenglenn/base16": "^1.0.1",
-    "@vandeurenglenn/base32": "^1.2.2",
+    "@vandeurenglenn/base32": "^1.2.3",
     "@vandeurenglenn/base58": "^1.1.8",
     "@vandeurenglenn/base58check": "^1.1.1",
     "@vandeurenglenn/base64": "^1.0.0"

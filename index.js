@@ -78,9 +78,6 @@ const fromBase16 = (string) => base16.decode(string);
 class FormatInterface {
     encoded;
     constructor(input) {
-        return this.init(input);
-    }
-    async init(input) {
         if (input) {
             if (base16.isBase16(input))
                 this.encoded = this.fromBase16(input);
@@ -104,7 +101,6 @@ class FormatInterface {
             else if (Array.isArray(input) && isTypedArrayCompatible(input))
                 this.encoded = this.fromArrayLike(input);
         }
-        return this;
     }
     /**
    * Returns a String as Uint8Array

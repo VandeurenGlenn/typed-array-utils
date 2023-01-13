@@ -6,14 +6,14 @@ import base64 from "@vandeurenglenn/base64"
 /**
  * a hexString contains only [0-9] followed by [0-9] or [ A | B | C | D | E | F]
  */
-type hexString = string
+declare type hexString = string
 
 /**
  * a uint8ArrayString contains only Array(number)
  */
-type uint8ArrayString = string
+declare type uint8ArrayString = string
 
-type FormatInterfaceSupportedInput = Uint8Array | base58String | base32String | object
+declare type FormatInterfaceSupportedInput = Uint8Array | base58String | base32String | object
 
 export const isTypedArrayCompatible = (possibleUint8Array: number[] | string): boolean => {
   if (typeof possibleUint8Array === 'string') {
@@ -118,9 +118,6 @@ class FormatInterface {
   encoded: Uint8Array
 
   constructor(input: FormatInterfaceSupportedInput) {
-    return this.init(input)
-  }
-  async init(input: FormatInterfaceSupportedInput): Promise<FormatInterface> {
     if (input) {
       if (base16.isBase16(input as base16String)) this.encoded = this.fromBase16(input as base16String)      
       else if (base32.isBase32(input as base32String)) this.encoded = this.fromBase32(input as base32String)      
@@ -134,7 +131,6 @@ class FormatInterface {
       else if (input as Uint8Array instanceof Uint8Array) this.encoded = input
       else if (Array.isArray(input) && isTypedArrayCompatible(input)) this.encoded = this.fromArrayLike(input)
     }
-    return this
   }
 
     /**
@@ -218,7 +214,7 @@ class FormatInterface {
   }
 
   toBase64(uint8Array: Uint8Array): base64String {
-    return  base64.encode(uint8Array)
+    return base64.encode(uint8Array)
   }
 
   fromBase64(string: base64String): Uint8Array {
