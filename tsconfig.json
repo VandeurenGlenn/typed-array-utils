@@ -7,7 +7,8 @@
     "declaration": true
   },
   "include": [
-    "./src/**/*"
+    "./src/**/*",
+    "./node_modules/@vandeurenglenn/base32/index.ts"
   ],
   "exclude": ["node_modules"]
 }

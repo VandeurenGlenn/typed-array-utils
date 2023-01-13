@@ -13,7 +13,7 @@ declare type hexString = string
  */
 declare type uint8ArrayString = string
 
-declare type FormatInterfaceSupportedInput = Uint8Array | base58String | base32String | object
+declare type FormatInterfaceSupportedInput = Uint8Array | base58String | string | object
 
 export const isTypedArrayCompatible = (possibleUint8Array: number[] | string): boolean => {
   if (typeof possibleUint8Array === 'string') {
@@ -90,10 +90,10 @@ export const fromObject = (object: Object): Uint8Array => new TextEncoder().enco
 
 export const toObject = (uint8Array: Uint8Array): Object => JSON.parse(new TextDecoder().decode(uint8Array))
 
-export const toBase64  = (uint8Array: Uint8Array): base64String => 
+export const toBase64  = (uint8Array: Uint8Array): string => 
   base64.encode(uint8Array)
 
-export const fromBase64 =(string: base64String): Uint8Array => 
+export const fromBase64 =(string: string): Uint8Array => 
   base64.decode(string)
 
 export const toBase58 = (uint8Array: Uint8Array): base58String =>
@@ -102,16 +102,16 @@ export const toBase58 = (uint8Array: Uint8Array): base58String =>
 export const fromBase58 = (string: base58String): Uint8Array => 
   base58.decode(string)
 
-export const toBase32 = (uint8Array: Uint8Array): base32String =>
+export const toBase32 = (uint8Array: Uint8Array): string =>
   base32.encode(uint8Array)
 
-export const fromBase32 = (string: base32String): Uint8Array => 
+export const fromBase32 = (string: string): Uint8Array => 
   base32.decode(string) 
 
-export const toBase16 = (uint8Array: Uint8Array): base16String =>
+export const toBase16 = (uint8Array: Uint8Array): string =>
   base16.encode(uint8Array)
 
-export const fromBase16 = (string: base16String): Uint8Array => 
+export const fromBase16 = (string: string): Uint8Array => 
   base16.decode(string)
 
 class FormatInterface {
@@ -119,10 +119,10 @@ class FormatInterface {
 
   constructor(input: FormatInterfaceSupportedInput) {
     if (input) {
-      if (base16.isBase16(input as base16String)) this.encoded = this.fromBase16(input as base16String)      
-      else if (base32.isBase32(input as base32String)) this.encoded = this.fromBase32(input as base32String)      
+      if (base16.isBase16(input as string)) this.encoded = this.fromBase16(input as string)      
+      else if (base32.isBase32(input as string)) this.encoded = this.fromBase32(input as string)      
       else if (base58.isBase58(input as base58String)) this.encoded = this.fromBase58(input as base58String)
-      else if (base64.isBase64(input as base64String)) this.encoded = this.fromBase64(input as base64String)
+      else if (base64.isBase64(input as string)) this.encoded = this.fromBase64(input as string)
       else if (typeof input === 'string') {
         let isCompatible = isTypedArrayCompatible(input)
         if (isCompatible) this.encoded = fromUintArrayString(input)
@@ -213,11 +213,11 @@ class FormatInterface {
     return JSON.parse(new TextDecoder().decode(uint8Array))
   }
 
-  toBase64(uint8Array: Uint8Array): base64String {
+  toBase64(uint8Array: Uint8Array): string {
     return base64.encode(uint8Array)
   }
 
-  fromBase64(string: base64String): Uint8Array {
+  fromBase64(string: string): Uint8Array {
     return base64.decode(string)
   }
 
@@ -229,19 +229,19 @@ class FormatInterface {
     return base58.decode(string)
   }  
 
-  toBase32(uint8Array: Uint8Array): base32String {
+  toBase32(uint8Array: Uint8Array): string {
     return  base32.encode(uint8Array)
   }
 
-  fromBase32(string: base32String): Uint8Array {
+  fromBase32(string: string): Uint8Array {
     return base32.decode(string)
   }
 
-  toBase16(uint8Array: Uint8Array): base16String {
+  toBase16(uint8Array: Uint8Array): string {
     return  base16.encode(uint8Array)
   }
 
-  fromBase16(string: base16String): Uint8Array {
+  fromBase16(string: string): Uint8Array {
     return base16.decode(string)
   }
   

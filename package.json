@@ -1,6 +1,6 @@
 {
   "name": "@vandeurenglenn/typed-array-utils",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "",
   "type": "module",
   "types": "./index.ds.ts",
@@ -38,6 +38,7 @@
     "@vandeurenglenn/base32": "^1.2.3",
     "@vandeurenglenn/base58": "^1.1.8",
     "@vandeurenglenn/base58check": "^1.1.1",
-    "@vandeurenglenn/base64": "^1.0.0"
+    "@vandeurenglenn/base64": "^1.0.0",
+    "@vandeurenglenn/typed-array-utils": "^1.1.0"
   }
 }
