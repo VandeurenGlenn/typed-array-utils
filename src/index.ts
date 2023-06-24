@@ -3,6 +3,8 @@ import base32 from "@vandeurenglenn/base32"
 import base58 from "@vandeurenglenn/base58"
 import base64 from "@vandeurenglenn/base64"
 
+// TODO: Bignumber....
+
 /**
  * a hexString contains only [0-9] followed by [0-9] or [ A | B | C | D | E | F]
  */
@@ -15,7 +17,15 @@ declare type uint8ArrayString = string
 
 declare type FormatInterfaceSupportedInput = Uint8Array | base58String | string | object
 
-export const isTypedArrayCompatible = (possibleUint8Array: number[] | string): boolean => {
+/**
+ * Returns a hex string as Binary string
+ * @param string string to encode to binary
+ * @returns binaryString
+ */
+const hexToBinary = (hex: hexString) => 
+  (parseInt(hex, 16).toString(2)).padStart(8, '0')
+
+export const isTypedArrayCompatible = (possibleUint8Array: number[] | string | Uint8Array): boolean => {
   if (typeof possibleUint8Array === 'string') {
     possibleUint8Array = possibleUint8Array.split(',').map(number =>   Number(number))
     for (const number of possibleUint8Array) {
@@ -33,28 +43,32 @@ export const isTypedArrayCompatible = (possibleUint8Array: number[] | string): b
  * @param string string to encode to Uint8Array
  * @returns Uint8Array
  */
-export const fromString = (string: string): Uint8Array => new TextEncoder().encode(string)
+export const fromString = (string: string): Uint8Array =>
+  new TextEncoder().encode(string)
 
 /**
  * Returns a Uint8Array as String
  * @param uint8Array Uint8Array to encode to String
  * @returns String
  */
-export const toString = (uint8Array: Uint8Array): string => new TextDecoder().decode(uint8Array)
+export const toString = (uint8Array: Uint8Array): string =>
+  new TextDecoder().decode(uint8Array)
 
 /**
  * Returns a String as Uint8Array
  * @param string string to encode to Uint8Array
  * @returns Uint8Array
  */
-export const fromUintArrayString = (string: uint8ArrayString): Uint8Array => Uint8Array.from(string.split(',').map(string => Number(string)))
+export const fromUintArrayString = (string: uint8ArrayString): Uint8Array =>
+  Uint8Array.from(string.split(',').map(string => Number(string)))
 
 /**
  * Returns a Uint8Array as String
  * @param uint8Array Uint8Array to encode to String
  * @returns String
  */
-export const toUintArrayString = (uint8Array: Uint8Array): string => uint8Array.toString()
+export const toUintArrayString = (uint8Array: Uint8Array): string =>
+  uint8Array.toString()
 
 /**
  * hexString -> uint8Array
@@ -69,7 +83,7 @@ export const fromHex = (string: hexString): Uint8Array =>
  * @param bytes number[]
  * @returns hexString
  */
-export const toHex = (bytes: number[]): hexString =>
+export const toHex = (bytes: Uint8Array): hexString =>
   bytes.reduce((string: string, byte: number) => string + byte.toString(16).padStart(2, '0'), '')
 
   /**
@@ -77,18 +91,38 @@ export const toHex = (bytes: number[]): hexString =>
    * @param array number[]
    * @returns Uint8Array
    */
-export const fromArrayLike = (array: number[]): Uint8Array => Uint8Array.from(array)
+export const fromArrayLike = (array: number[] | []): Uint8Array =>
+  Uint8Array.from(array)
 
 /**
  * Uint8Array -> number[]
  * @param uint8Array Uint8Array
  * @returns Uint8Array
  */
-export const toArrayLike = (uint8Array: number[]): number[] => [...uint8Array.values()]
+export const toArrayLike = (uint8Array: Uint8Array): number[] =>
+  [...uint8Array.values()]
 
-export const fromObject = (object: Object): Uint8Array => new TextEncoder().encode(JSON.stringify(object))
+/**
+* object -> Uint8Array
+* @param object any
+* @returns Uint8Array
+*/
+export const fromObject = (object: Object): Uint8Array =>
+  new TextEncoder().encode(JSON.stringify(object))
 
-export const toObject = (uint8Array: Uint8Array): Object => JSON.parse(new TextDecoder().decode(uint8Array))
+/**
+ * Uint8Array -> Object
+ * @param uint8Array Uint8Array
+ * @returns Object
+ */
+export const toObject = (uint8Array: Uint8Array): Object =>
+  JSON.parse(new TextDecoder().decode(uint8Array))
+
+export const fromBinary = (string: string): Uint8Array => 
+  fromHex(parseInt(string, 2).toString(16).toUpperCase())
+
+export const toBinary = (uint8Array: Uint8Array): string =>
+  hexToBinary(toHex(uint8Array))
 
 export const toBase64  = (uint8Array: Uint8Array): string => 
   base64.encode(uint8Array)
@@ -116,6 +150,7 @@ export const fromBase16 = (string: string): Uint8Array =>
 
 class FormatInterface {
   encoded: Uint8Array
+  decoded: string | {} | number | boolean | []
 
   constructor(input: FormatInterfaceSupportedInput) {
     if (input) {
@@ -138,112 +173,100 @@ class FormatInterface {
    * @param string string to encode to Uint8Array
    * @returns Uint8Array
    */
-  fromString(string: string): Uint8Array {
-    return new TextEncoder().encode(string)
-  }
+  fromString = (string: string): Uint8Array =>
+    this.encoded = fromString(string)
 
   /**
    * Returns a Uint8Array as String
    * @param uint8Array Uint8Array to encode to String
    * @returns String
    */
-  toString(uint8Array: Uint8Array): string {
-    return new TextDecoder().decode(uint8Array)
-  }
+  toString = (uint8Array: Uint8Array): string =>
+    this.decoded = toString(uint8Array)
 
   /**
    * Returns a String as Uint8Array
    * @param string string to encode to Uint8Array
    * @returns Uint8Array
    */
-  fromUintArrayString(string: uint8ArrayString): Uint8Array {
-    return Uint8Array.from(string.split(',').map(string => Number(string)))
-  }
+  fromUintArrayString = (string: uint8ArrayString): Uint8Array =>
+    this.encoded = fromUintArrayString(string)
 
   /**
    * Returns a Uint8Array as String
    * @param uint8Array Uint8Array to encode to String
    * @returns String
    */
-  toUintArrayString(uint8Array: Uint8Array): string {
-    return uint8Array.toString()
-  }
+  toUintArrayString = (uint8Array: Uint8Array): string =>
+    this.decoded = uint8Array.toString()
 
   /**
    * hexString -> uint8Array
    * @param string hex encoded string
    * @returns UintArray
    */
-  fromHex(string: hexString): Uint8Array {  
-    return Uint8Array.from(string.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
-  }
+  fromHex = (string: hexString): Uint8Array =>
+    this.encoded = fromHex(string)
 
   /**
    * uint8Array -> hexString
-   * @param bytes number[]
+   * @param bytes ArrayLike
    * @returns hexString
    */
-  toHex(bytes: number[]): hexString {
-    return bytes.reduce((string: string, byte: number) => string + byte.toString(16).padStart(2, '0'), '') 
-  }
+  toHex = (arrayLike: Uint8Array): hexString =>
+    this.decoded = toHex(arrayLike)
 
     /**
      * number[] -> Uint8Array
      * @param array number[]
      * @returns Uint8Array
      */
-  fromArrayLike(array: number[]): Uint8Array {
-    return Uint8Array.from(array)
-  }
+  fromArrayLike = (array: number[]): Uint8Array =>
+    this.encoded = Uint8Array.from(array)
 
   /**
    * Uint8Array -> number[]
    * @param uint8Array Uint8Array
    * @returns Uint8Array
    */
-  toArrayLike(uint8Array: number[]): number[] {
-    return [...uint8Array.values()]
-  }
+  toArrayLike = (uint8Array: number[]): number[] =>
+    this.decoded = [...uint8Array.values()]
 
-  fromObject(object: Object): Uint8Array {
-    return new TextEncoder().encode(JSON.stringify(object))
-  }
+  fromObject = (object: Object): Uint8Array => 
+    this.encoded = fromObject(object)
+  
+  toBinary = (uint8Array: Uint8Array): string =>
+    this.decoded = hexToBinary(toHex(uint8Array))
 
-  toObject(uint8Array: Uint8Array): Object {
-    return JSON.parse(new TextDecoder().decode(uint8Array))
-  }
+  fromBinary = (binary: string) =>
+    this.encoded = fromBinary(binary)
 
-  toBase64(uint8Array: Uint8Array): string {
-    return base64.encode(uint8Array)
-  }
+  toObject = (uint8Array: Uint8Array): Object =>
+    this.decoded = toObject(uint8Array)
 
-  fromBase64(string: string): Uint8Array {
-    return base64.decode(string)
-  }
+  toBase64 = (uint8Array: Uint8Array): string =>
+    this.decoded = base64.encode(uint8Array)
 
-  toBase58(uint8Array: Uint8Array): base58String {
-    return base58.encode(uint8Array)
-  }
+  fromBase64 = (string: string): Uint8Array =>
+    this.encoded = base64.decode(string)
 
-  fromBase58(string: base58String): Uint8Array  {
-    return base58.decode(string)
-  }  
+  toBase58 = (uint8Array: Uint8Array): base58String =>
+    this.decoded = base58.encode(uint8Array)
 
-  toBase32(uint8Array: Uint8Array): string {
-    return  base32.encode(uint8Array)
-  }
+  fromBase58 = (string: base58String): Uint8Array =>
+    this.encoded = base58.decode(string)
+  
+  toBase32 = (uint8Array: Uint8Array): string =>
+    this.decoded =  base32.encode(uint8Array)
 
-  fromBase32(string: string): Uint8Array {
-    return base32.decode(string)
-  }
+  fromBase32 = (string: string): Uint8Array =>
+    this.encoded = base32.decode(string)
 
-  toBase16(uint8Array: Uint8Array): string {
-    return  base16.encode(uint8Array)
-  }
+  toBase16 = (uint8Array: Uint8Array): string =>
+    this.decoded =  base16.encode(uint8Array)
 
-  fromBase16(string: string): Uint8Array {
-    return base16.decode(string)
-  }
+  fromBase16 = (string: string): Uint8Array =>
+    this.decoded = base16.decode(string)
   
 }
 
@@ -255,7 +278,10 @@ export default {
   fromArrayLike,
   toArrayLike,
   fromUintArrayString,
-  toUintArrayString,    
+  toUintArrayString,  
+  toObject,
+  toBinary,
+  fromBinary, 
   toBase64,
   fromBase64,
   toBase58,

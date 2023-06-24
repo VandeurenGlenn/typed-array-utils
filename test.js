@@ -14,6 +14,9 @@ console.log(utils.toBase16(uint8Array));
 
 console.log(utils.fromString(utils.toHex(uint8Array)));
 
+console.log('bin' + utils.toBinary(uint8Array));
+console.log(utils.fromBinary(utils.toBinary(uint8Array)));
+
 let face = new utils.FormatInterface(utils.toBase58(uint8Array))
 console.log(face.toString(face.encoded));
 face = new utils.FormatInterface(utils.toBase32(uint8Array))

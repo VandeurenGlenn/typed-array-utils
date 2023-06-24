@@ -39,6 +39,7 @@
     "@vandeurenglenn/base58": "^1.1.8",
     "@vandeurenglenn/base58check": "^1.1.1",
     "@vandeurenglenn/base64": "^1.0.0",
-    "@vandeurenglenn/typed-array-utils": "^1.1.0"
+    "@vandeurenglenn/typed-array-utils": "^1.1.0",
+    "uint8-util": "^2.1.9"
   }
 }
